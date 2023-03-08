@@ -5,15 +5,15 @@ using WebAPIPrectice.Models;
 
 namespace WebAPIPrectice.Controllers;
 
-[ApiVersion("1.0")]
+[ApiVersion("2.0")]
 [ApiController]
 // [Route("[controller]")]
 [Route("v{version:apiVersion}/products")]
-public class ProductsController : ControllerBase
+public class ProductsV2Controller : ControllerBase
 {
     private readonly WebAPIContext _context;
 
-    public ProductsController(WebAPIContext context)
+    public ProductsV2Controller(WebAPIContext context)
     {
         _context = context;
     }
@@ -59,7 +59,7 @@ public class ProductsController : ControllerBase
             .Take(queryParameters.PageSize);
 
 
-        return Ok(await products.ToArrayAsync());
+        return Ok(await products.Where(p => p.IsAvailable == true).ToArrayAsync());
     }
 
     [HttpGet("{id}")]
