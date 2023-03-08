@@ -32,4 +32,64 @@ public class ProductsController : ControllerBase
         }
         return Ok(product);
     }
+
+    [HttpPost]
+    public async Task<ActionResult> PostProduct(Product product)
+    {
+        if (product == null)
+        {
+            return BadRequest();
+        }
+
+        _context.Products.Add(product);
+        await _context.SaveChangesAsync();
+        return Ok(product);
+    }
+
+    [HttpPut]
+    public async Task<ActionResult> PutProduct(Product product)
+    {
+        if (product == null)
+        {
+            return BadRequest();
+        }
+
+        if (!_context.Products.Any(x => x.Id == product.Id))
+        {
+            return NotFound();
+        }
+
+        _context.Update(product);
+        await _context.SaveChangesAsync();
+        return Ok(product);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteProduct(int id)
+    {
+        Product product = _context.Products.FirstOrDefault(x => x.Id == id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        _context.Products.Remove(product);
+        await _context.SaveChangesAsync();
+        return Ok(product);
+    }
+
+    [HttpPost]
+    [Route("delete")]
+    public async Task<ActionResult> DeleteProducts([FromQuery] int[] ids)
+    {
+        List<Product> products = _context.Products.Where(x => ids.Contains(x.Id)).ToList();
+        if (products == null)
+        {
+            return BadRequest();
+        }
+
+        _context.Products.RemoveRange(products);
+        await _context.SaveChangesAsync();
+        return Ok(products);
+    }
 }
