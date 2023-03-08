@@ -40,8 +40,23 @@ public class ProductsController : ControllerBase
             products = products.Where(x => x.Sku.ToLower().Contains(queryParameters.Sku.ToLower()));
         }
 
+        if (queryParameters.orderBy != null)
+        {
+            if (typeof(Product).GetProperty(queryParameters.orderBy) != null)
+            {
+                products = products.OrderByCustom(queryParameters.orderBy, queryParameters.sortOrder);
+            }
+        }
+        if (queryParameters.SearchTerm != null)
+        {
+            products = products.Where(x => x.Name.ToLower().Contains(queryParameters.SearchTerm.ToLower())
+            || x.Sku.ToLower().Contains(queryParameters.SearchTerm.ToLower()));
+        }
+
         products = products.Skip((queryParameters.PageNumber - 1) * queryParameters.PageSize)
             .Take(queryParameters.PageSize);
+
+
         return Ok(await products.ToArrayAsync());
     }
 
