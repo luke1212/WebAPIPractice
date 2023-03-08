@@ -11,4 +11,5 @@ public partial class QueryParameters
         get { return _size; }
         set { _size = (value > maxPageSize) ? maxPageSize : value; }
     }
+    public string? SearchTerm { get; set; }
 }
